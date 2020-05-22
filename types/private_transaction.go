@@ -38,6 +38,11 @@ func NewContractCreation(nonce uint64, amount *big.Int, gasLimit uint64, gasPric
 	return newTransaction(nonce, nil, amount, gasLimit, gasPrice, data, privateFrom, privateFor)
 }
 
+// NewTransaction .
+func NewTransaction(nonce uint64, to *common.Address, amount *big.Int, gasLimit uint64, gasPrice *big.Int, data []byte, privateFrom []byte, privateFor [][]byte) *PrivateTransaction {
+	return newTransaction(nonce, to, amount, gasLimit, gasPrice, data, privateFrom, privateFor)
+}
+
 // SignTx .
 func (tx *PrivateTransaction) SignTx(chainID *big.Int, prv *ecdsa.PrivateKey) (*PrivateTransaction, error) {
 	h := hash(tx, chainID)
