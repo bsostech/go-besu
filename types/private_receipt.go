@@ -76,7 +76,7 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 	if _, ok := r["privateFor"]; !ok {
 		return nil, fmt.Errorf("privateFor not found")
 	}
-	var privateFor [][]byte
+	var privateFor []privacy.PublicKey
 	for _, v := range r["privateFor"].([]interface{}) {
 		key, err := privacy.ToPublicKey(v.(string))
 		if err != nil {
@@ -108,10 +108,14 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 	if _, ok := r["logsBloom"]; !ok {
 		return nil, fmt.Errorf("logsBloom not found")
 	}
-	var logsBloom types.Bloom
-	err = logsBloom.UnmarshalText(r["logsBloom"].([]byte))
+	logsBloomString := r["logsBloom"].(string)
+	logsBloomBytes, err := hexutil.Decode(logsBloomString)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to Decode %v, err: %v", logsBloomString, err)
+	}
+	logsBloom := types.BytesToBloom(logsBloomBytes)
+	if err != nil {
+		return nil, fmt.Errorf("failed to UnmarshalText %v, err: %v", logsBloomString, err)
 	}
 	// blockHash not required
 	var blockHash common.Hash
@@ -143,7 +147,7 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 		TransactionIndex: transactionIndex,
 		PrivateFrom:      privateFrom,
 		PrivateFor:       privateFor,
-		Restriction:      "restructed",
+		Restriction:      "restricted",
 		CommitmentHash:   commitmentHash,
 		Output:           output,
 	}, nil
