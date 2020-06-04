@@ -108,13 +108,12 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 	if _, ok := r["logsBloom"]; !ok {
 		return nil, fmt.Errorf("logsBloom not found")
 	}
-	var logsBloom types.Bloom
 	logsBloomString := r["logsBloom"].(string)
 	logsBloomBytes, err := hexutil.Decode(logsBloomString)
 	if err != nil {
 		return nil, fmt.Errorf("failed to Decode %v, err: %v", logsBloomString, err)
 	}
-	err = logsBloom.UnmarshalText(logsBloomBytes)
+	logsBloom := types.BytesToBloom(logsBloomBytes)
 	if err != nil {
 		return nil, fmt.Errorf("failed to UnmarshalText %v, err: %v", logsBloomString, err)
 	}
