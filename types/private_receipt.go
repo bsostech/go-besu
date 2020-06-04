@@ -112,11 +112,11 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 	logsBloomString := r["logsBloom"].(string)
 	logsBloomBytes, err := hexutil.Decode(logsBloomString)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to Decode %v, err: %v", logsBloomString, err)
 	}
 	err = logsBloom.UnmarshalText(logsBloomBytes)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to UnmarshalText %v, err: %v", logsBloomString, err)
 	}
 	// blockHash not required
 	var blockHash common.Hash
