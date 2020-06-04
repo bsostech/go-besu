@@ -33,8 +33,8 @@ type PrivateReceipt struct {
 	TransactionIndex uint        `json:"transactionIndex"`
 
 	// Privacy
-	PrivateFrom []byte   `json:"privateFrom"    gencodec:"required"`
-	PrivateFor  [][]byte `json:"privateFor"    gencodec:"required"`
+	PrivateFrom privacy.PublicKey   `json:"privateFrom"    gencodec:"required"`
+	PrivateFor  []privacy.PublicKey `json:"privateFor"    gencodec:"required"`
 	Restriction string
 
 	// Private
