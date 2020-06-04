@@ -76,7 +76,7 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 	if _, ok := r["privateFor"]; !ok {
 		return nil, fmt.Errorf("privateFor not found")
 	}
-	var privateFor [][]byte
+	var privateFor []privacy.PublicKey
 	for _, v := range r["privateFor"].([]interface{}) {
 		key, err := privacy.ToPublicKey(v.(string))
 		if err != nil {
@@ -143,7 +143,7 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 		TransactionIndex: transactionIndex,
 		PrivateFrom:      privateFrom,
 		PrivateFor:       privateFor,
-		Restriction:      "restructed",
+		Restriction:      "restricted",
 		CommitmentHash:   commitmentHash,
 		Output:           output,
 	}, nil
