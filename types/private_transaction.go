@@ -6,6 +6,7 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/rlp"
 	"golang.org/x/crypto/sha3"
@@ -53,6 +54,33 @@ func (tx *PrivateTransaction) SignTx(chainID *big.Int, prv *ecdsa.PrivateKey) (*
 	return withSignature(tx, sig, chainID)
 }
 
+// MarshalPrivateTransaction .
+func MarshalPrivateTransaction(r map[string]interface{}) (*PrivateTransaction, error) {
+	// AccountNonce: can not get private nonce from r now
+	// Price , GasLimit Amount dont care
+	// recipient required
+	var recipient *common.Address
+	if _, ok := r["to"]; !ok {
+		*recipient = common.HexToAddress(r["to"].(string))
+	}
+	// payload required
+	if _, ok := r["payload"]; !ok {
+		return nil, fmt.Errorf("payload not found")
+	}
+	payload, err := hexutil.Decode(r["payload"].(string))
+	if err != nil {
+		return nil, fmt.Errorf("payload can not decode")
+	}
+	// KEVIN TODO: load other args
+	ptx := txdata{
+		Recipient: recipient,
+		Payload:   payload,
+	}
+	return &PrivateTransaction{
+		Data: ptx,
+	}, nil
+}
+
 func newTransaction(nonce uint64, to *common.Address, amount *big.Int, gasLimit uint64, gasPrice *big.Int, data []byte, privateFrom []byte, privateFor [][]byte) *PrivateTransaction {
 	if len(data) > 0 {
 		data = common.CopyBytes(data)
@@ -98,7 +126,10 @@ func hash(tx *PrivateTransaction, chainID *big.Int) common.Hash {
 
 func rlpHash(x interface{}) (h common.Hash) {
 	hw := sha3.NewLegacyKeccak256()
-	rlp.Encode(hw, x)
+	err := rlp.Encode(hw, x)
+	if err != nil {
+		return common.Hash{}
+	}
 	hw.Sum(h[:0])
 	return h
 }
