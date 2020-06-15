@@ -87,9 +87,10 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 	// status not required
 	var status uint64
 	if v, ok := r["status"]; ok {
-		i := new(big.Int)
-		i.SetString(v.(string), 16)
-		status = i.Uint64()
+		if v.(string) == "0x1" {
+			status = uint64(1)
+		}
+		status = uint64(0)
 	}
 	// logs required
 	if _, ok := r["logs"]; !ok {
