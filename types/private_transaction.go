@@ -64,10 +64,10 @@ func MarshalPrivateTransaction(r map[string]interface{}) (*PrivateTransaction, e
 		*recipient = common.HexToAddress(r["to"].(string))
 	}
 	// payload required
-	if _, ok := r["payload"]; !ok {
-		return nil, fmt.Errorf("payload not found")
+	if _, ok := r["input"]; !ok {
+		return nil, fmt.Errorf("input data not found")
 	}
-	payload, err := hexutil.Decode(r["payload"].(string))
+	payload, err := hexutil.Decode(r["input"].(string))
 	if err != nil {
 		return nil, fmt.Errorf("payload can not decode")
 	}
