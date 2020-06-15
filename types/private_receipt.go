@@ -85,12 +85,11 @@ func MarshalPrivateReceipt(r map[string]interface{}) (*PrivateReceipt, error) {
 		privateFor = append(privateFor, key)
 	}
 	// status not required
-	var status uint64
+	status := uint64(0)
 	if v, ok := r["status"]; ok {
 		if v.(string) == "0x1" {
 			status = uint64(1)
 		}
-		status = uint64(0)
 	}
 	// logs required
 	if _, ok := r["logs"]; !ok {
