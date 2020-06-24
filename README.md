@@ -87,7 +87,6 @@ func main() {
 	// 2. get private nonce
 	privateNonce, _ := priv.PrivateNonce(fromAddress, rootPrivacyGroup)
 
-	// besutx := types.NewContractCreation(privateNonce, nil, gasLimit, big.NewInt(0), data, privateFrom, privateFor)
 	contractAddress := common.HexToAddress("0xaa56458ec6440e480f38be8de3a1abca3a95b7ea")
 	data, _ := hexutil.Decode("0x0121b93f0000000000000000000000000000000000000000000000000000000000000002")
 	besutx := types.NewTransaction(privateNonce, &contractAddress, nil, gasLimit, big.NewInt(0), data, privateFrom, privateFor)
@@ -111,3 +110,7 @@ func main() {
 	log.Println(txHash.Hex())
 }
 ```
+
+## License
+go-besu is MIT licensed.
+
